@@ -27,8 +27,14 @@ app.use(AV.express());
 expressWs(app);
 //使用 app.ws 方法来注册 WebSocket 路由请求了：
 app.ws('/echo', function(ws, req) {
+  console.log("New connection");
   ws.on('message', function(msg) {
-    ws.send('you said: '+msg);
+    console.log("received:"+msg);
+    ws.send(msg);
+  });
+  ws.on('close', function(msg) {
+    console.log("close connection")
+    ws.send('websocket closed: '+msg);
   });
 });
 
