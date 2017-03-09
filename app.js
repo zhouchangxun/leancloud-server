@@ -8,6 +8,7 @@ var AV = require('leanengine');
 
 // 加载云函数定义，你可以将云函数拆分到多个文件方便管理，但需要在主文件中加载它们
 require('./cloud');
+var expressWs = require('express-ws');
 
 var app = express();
 
@@ -22,6 +23,14 @@ app.use(timeout('15s'));
 
 // 加载云引擎中间件
 app.use(AV.express());
+
+expressWs(app);
+//使用 app.ws 方法来注册 WebSocket 路由请求了：
+app.ws('/echo', function(ws, req) {
+  ws.on('message', function(msg) {
+    ws.send('you said: '+msg);
+  });
+});
 
 app.enable('trust proxy');
 // 需要重定向到 HTTPS 可去除下一行的注释。
